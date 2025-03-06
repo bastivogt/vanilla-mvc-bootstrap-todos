@@ -1,4 +1,4 @@
-export class HashRouter {
+export class HashRouter2 {
     static _instance = null;
 
     static getInstance() {
@@ -30,7 +30,7 @@ export class HashRouter {
     }
 }
 
-export class HashRouter2 {
+export class HashRouter {
     static onHashChange = () => {};
     static onInit = () => {};
 
@@ -46,13 +46,7 @@ export class HashRouter2 {
         return hash;
     }
 
-    static write(str, params = null) {
-        const path = str;
-        if (params) {
-            for (const prop in params) {
-                path = path.replaceAll(`:${prop}`, params[prop]);
-            }
-        }
-        window.location.hash = path;
+    static write(str) {
+        window.location.hash = str;
     }
 }

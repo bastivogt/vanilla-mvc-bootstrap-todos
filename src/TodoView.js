@@ -1,4 +1,5 @@
 import { DOM } from "./../helper.js";
+import { HashRouter } from "./routes/HashRouter.js";
 
 export class TodoView {
     constructor(container) {
@@ -12,13 +13,60 @@ export class TodoView {
         this.onEdit = () => {};
         console.log("TodoView");
         //Partials.drawCreateForm();
+
+        this.root = DOM.createElement({ tag: "div", className: "todos-root" });
+
+        this.container.append(this.root);
+    }
+
+    index(todos) {
+        DOM.clearChildren(this.root);
+        this.drawNav();
+        this.drawCreateForm();
+        this.drawTodos(todos);
+        //this.container.append(this.root);
+    }
+
+    createdBy() {
+        DOM.clearChildren(this.root);
+        this.drawNav();
+        const container = DOM.createElement({ tag: "div" });
+        container.innerHTML = Templates.drawCreatedBy();
+        this.root.append(container);
+        //this.container.append(this.root);
+    }
+
+    drawNav() {
+        console.log("drwa nav");
+        const nav = DOM.createElement({
+            tag: "nav",
+            className: "nav-container",
+        });
+        nav.innerHTML = Templates.drawNav();
+        const navLinks = nav.querySelectorAll("[data-route]");
+        navLinks.forEach((item) => {
+            item.addEventListener("click", (e) => {
+                console.log("data-route clicked");
+                e.preventDefault();
+                const dataRoute = e.target.dataset.route;
+                console.log(dataRoute);
+                HashRouter.write(dataRoute);
+            });
+        });
+        this.root.append(nav);
     }
 
     drawCreateForm() {
-        this.root = DOM.createElement({ tag: "div", className: "todos-root" });
-        const form = Partials.drawCreateForm();
-        this.root.innerHTML = form;
-        this.container.append(this.root);
+        //this.root = DOM.createElement({ tag: "div", className: "todos-root" });
+        const form = DOM.createElement({
+            tag: "div",
+            className: "create-form-container",
+        });
+        //const form = Templates.drawCreateForm();
+        form.innerHTML = Templates.drawCreateForm();
+        this.root.append(form);
+        //this.root.innerHTML = form;
+        //this.container.append(this.root);
 
         const inputTodo = this.root.querySelector(".input-todo");
         const buttonCreateTodo = this.root.querySelector(".create-todo");
@@ -62,7 +110,7 @@ export class TodoView {
                     className: "todo-item",
                 });
 
-                todoItem.innerHTML = Partials.drawTodoItem(todo);
+                todoItem.innerHTML = Templates.drawTodoItem(todo);
 
                 const todoDeleteButton = todoItem.querySelector(
                     ".todo-delete-button"
@@ -98,7 +146,7 @@ export class TodoView {
     }
 }
 
-class Partials {
+class Templates {
     static drawCreateForm() {
         const html =
             /*html*/
@@ -150,6 +198,30 @@ class Partials {
             </div>
         `;
 
+        return html;
+    }
+
+    static drawNav() {
+        const html = /*html*/ `
+            <ul class="nav justify-content-end">
+                <li class="nav-item">
+                <a class="nav-link" href="#" data-route="/">Todos</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="#" data-route="/createdby">Created by</a>
+                </li>
+            </ul>
+        `;
+        return html;
+    }
+
+    static drawCreatedBy() {
+        const html =
+            /*html*/
+            `
+            <h1 class="display-1">Created by:</h1>
+            <p>Sebastian Vogt</p>
+        `;
         return html;
     }
 }

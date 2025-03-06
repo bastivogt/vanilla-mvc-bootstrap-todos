@@ -1,4 +1,8 @@
 import { Helper, DOM } from "../helper.js";
+import { RoutesManager } from "./routes/RoutesManager.js";
+import { Route } from "./routes/Route.js";
+import { HashRouter } from "./routes/HashRouter.js";
+
 export class TodoController {
     constructor(model, view) {
         this.model = model;
@@ -6,22 +10,30 @@ export class TodoController {
 
         this.model.sortTodosByDone();
 
-        console.log("TodoController");
-    }
-
-    // action index
-    index() {
-        console.log("TodoController#index");
-        this.view.drawCreateForm();
-        this.view.drawTodos(this.model.todos);
-
         this.model.onUpdated = (todos) => {
             this.model.sortTodosByDone();
             console.log("onUpdated todos: ", todos);
             DOM.clearChildren(this.view.root);
-            this.view.drawCreateForm();
-            this.view.drawTodos(this.model.todos);
+            this.view.index(this.model.todos);
+            // this.view.drawCreateForm();
+            // this.view.drawTodos(this.model.todos);
         };
+    }
+
+    // action index
+    index(route) {
+        console.log("TodoController#index");
+        this.view.index(this.model.todos);
+        // this.view.drawCreateForm();
+        // this.view.drawTodos(this.model.todos);
+
+        // this.model.onUpdated = (todos) => {
+        //     this.model.sortTodosByDone();
+        //     console.log("onUpdated todos: ", todos);
+        //     DOM.clearChildren(this.view.root);
+        //     this.view.drawCreateForm();
+        //     this.view.drawTodos(this.model.todos);
+        // };
 
         this.view.onCreate = (e) => {
             console.log("onCreate", e);
@@ -46,5 +58,10 @@ export class TodoController {
             console.log("onEdit");
             this.model.updateTodo(e.todo.id, e.newText);
         };
+    }
+
+    createdBy(route) {
+        console.log("TodoController#createdBy");
+        this.view.createdBy();
     }
 }
